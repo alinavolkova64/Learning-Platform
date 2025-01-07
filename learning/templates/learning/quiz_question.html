@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}"> 
+{% endblock %}
+
+{% block body %}
+<body>
+    <div class="container">
+        <div class="progress-container-quiz">
+            <div class="progress-bar-quiz" style="width: {{ progress_percentage }}%;" id="progress-bar">{{ progress_percentage }}%</div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card">
+            <h2 class="question-title" id="question-title">{{ question }}</h2>
+
+            <div class="timer" id="timer" data-time="{{ remaining_time }}">
+                Time Remaining: <span id="time-display">{{ remaining_time|time:"H:i:s" }}</span>
+            </div>
+            
+            
+            {% if question.image %}
+                <div class="image-container">
+                    <img src="{{ question.image.url }}" alt="Quiz Image" class="quiz-image" loading="lazy">
+                </div>
+            {% endif %}
+
+            <form id="question-form" method="POST" data-quiz-id="{{ quiz.id }}" 
+            action="{% url 'learning:quiz_question' quiz_id=quiz.id question_order=question_order %}">
+                {% csrf_token %}
+                <!-- Answer Options -->
+                <div class="options-container" id="options-container">
+                    {% for option in question.options.all %}
+                        <span class="inline">
+                            <input class="quiz-input" type="radio" id="option{{ option.id }}" name="student_answer" value="{{ option.id }}">
+                            <label for="option{{ option.id }}">{{ option.text }}</label>
+                        </span>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn-next" id="next-button">Next Question</button>      
+            </form>
+            
+        </div>
+    </div>
+    
+<script>
+let isFinalized = false;
+// JavaScript to visually count down on the frontend
+let timerElement = document.getElementById('timer');
+let timeRemaining = parseInt(timerElement.getAttribute('data-time')); // Remaining seconds
+
+function updateTimer() {
+    if (timeRemaining <= 0 && !isFinalized) {
+        isFinalized = true; // Prevent further requests
+        fetch("/learning/quiz-finalize/{{ quiz.id }}/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value, 
+            },
+            body: JSON.stringify({
+                quiz_id: "{{ quiz.id }}"
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = "/learning/quiz-complete/{{ quiz.id }}/"; // Redirect after finalization
+            } else {
+                alert("An error occurred while finalizing the quiz.");
+            }
+        });
+        //return;
+    }
+    
+    if (timeRemaining > 0) {
+        timeRemaining--;
+    }
+    let minutes = Math.floor(timeRemaining / 60);
+    let seconds = timeRemaining % 60;
+    document.getElementById('time-display').textContent =
+        `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+}
+
+setInterval(updateTimer, 1000); // Update every second
+
+    </script>
+
+
+    <!-- <script>
+        // JavaScript to visually count down on the frontend
+        let timerElement = document.getElementById('timer');
+        let timeRemaining = parseInt(timerElement.getAttribute('data-time')); // Remaining seconds
+    
+        function updateTimer() {
+            // if (timeRemaining <= 0) {
+            //     window.location.href = "/learning/quiz-complete/{{ quiz.id }}/"; // Redirect when time is up
+            //     return;
+            // }
+
+            if (timeRemaining <= 0) {
+                // Send AJAX request to finalize the quiz
+                fetch("/learning/quiz-finalize/{{ quiz.id }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value, 
+                    },
+                    body: JSON.stringify({
+                        quiz_id: "{{ quiz.id }}"
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "/learning/quiz-complete/{{ quiz.id }}/"; // Redirect after finalization
+                    } else {
+                        alert("An error occurred while finalizing the quiz.");
+                    }
+                });
+                return;
+            }
+            
+            timeRemaining--;
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+            document.getElementById('time-display').textContent =
+                `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+        }
+    
+        setInterval(updateTimer, 1000); // Update every second
+    </script>     -->
+</body>
+{% endblock %}

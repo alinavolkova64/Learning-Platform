@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}"> 
+{% endblock %}
+
+{% block body %}
+<body>
+    <h1 class="quiz-header">{{ quiz.name }}</h1>
+    <div class="container">
+        <section class="quiz-info section">
+            <ul>
+                <li><strong>Difficulty:</strong> {{ quiz.difficulty }}</li>
+                <li><strong>Course:</strong> {{ quiz.course.title }}</li>
+                <li><strong>Lesson:</strong> {{ quiz.lesson.title }}</li>
+                <li><strong>Required score to pass:</strong> {{ quiz.required_score }}%</li>
+                <li><strong>Timer will be set for:</strong> {{ quiz.time }} min</li>
+            </ul>
+        </section>
+            {% if session_exists %}
+                <p class="quiz-p">You have already taken this test quiz. Your score is {{ session.score }}%</p>
+            {% else %}
+                <p class="quiz-p">This is a test quiz session. You <strong>can not</strong> retake this test quiz.</p>
+                <!--Use GET method to start the quiz and show the first question-->
+                <div class="start">
+                    <a href="{% url 'learning:quiz_question' quiz_id=quiz.id question_order=1 %}" class="btn">Start Quiz</a>
+                </div>
+            {% endif %}
+    </div>
+</body>
+{% endblock %}

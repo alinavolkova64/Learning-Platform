@@ -1,0 +1,136 @@
+{% extends 'users/layout.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}"> 
+    {% endblock %}
+</head>
+
+{% block body %}
+    <div class="courses-header">
+        <h1 class="header">My Dashboard</h1>
+    </div>
+    <div class="container">
+        <!-- Notifications Section -->
+        <section class="section">
+            <div id="notif-header" class="notification-header">
+                <h3 class="notif">Notifications</h3>
+                <!-- Notification Bell -->
+                <a href="#" id="notificationBell">
+                    <i id="bellCount" class="fa-solid fa-bell" data-count="0"></i>
+                </a>
+            </div>
+            
+            <div id="notif-messages" class="hidden" >
+                <!-- JS Code -->
+            </div>
+            <button id="testNotificationButton">Create Test Notification</button>
+        </section>
+
+        <!-- Courses Enrolled Section -->
+        <section class="section">
+            <h3>Courses Enrolled</h3>
+            <ul>
+                {% for item in course_progress_data %}
+                    <li class="enrolled-courses padding">
+                        <div class="course-info">
+                            <span>{{ item.course }}</span>
+                        </div>
+                        <div class="progress-info" id="wide">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: {{ item.progress }}%;"></div>
+                            </div>
+                            <span class="progress-text">{{ item.progress }}%</span>
+                        </div>
+                        <div class="last-accessed">
+                            <p>Return to:   
+                                <a href="{% url 'learning:lesson' course_title=item.course lesson_order=item.last_accessed_lesson_order %}">
+                                    Last accessed lesson
+                                </a>
+                            </p>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>No enrolled courses.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    
+        <!-- Assignments Section -->
+        <section class="section">
+            <h3>Assignments</h3>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('pending')">Pending</div>
+                <div class="tab" onclick="switchTab('completed')">Completed</div>
+            </div>
+    
+            <div id="pending" class="tab-content">
+                <ul>
+                    {% for item in course_progress_data %}
+                    <li class="enrolled-courses">
+                        <a class="assignment" href="{% url 'learning:lesson' course_title=item.course  lesson_order=item.last_accessed_lesson_order %}">
+                        Assignment pending for lesson {{ item.last_accessed_lesson.title }} of {{ item.course }}.
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li>No pending assignments.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+    
+            <div id="completed" class="tab-content" style="display:none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Handed in on</th>
+                            <th>Assignment</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in course_progress_data %}
+                            {% for a in item.completed_assignments %}
+                            <tr>
+                                <td>{{ a.date_handed_in|date:"Y-m-d" }}</td> 
+                                <td>You handed in assignment for {{ a.lesson }}</td>
+                                <td>{{ a.grade|default:"-" }}</td> <!-- Displaying grade or "-" if none -->
+                            </tr>
+                            {% endfor %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">Complete your first assignment to see it here!</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>                
+            </div>
+        </section>
+    
+        <!-- Grade Overview Section -->
+        <section class="section">
+            <h3>Grade Overview</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Average Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in course_progress_data %}
+                    <tr>
+                        <td>{{ item.course }}</td>
+                        <td>{{ item.average_grade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+{% endblock %}
+</html>

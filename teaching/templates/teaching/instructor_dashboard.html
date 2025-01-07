@@ -1,0 +1,153 @@
+{% extends 'users/layout.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor's Dashboard</title>
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'teaching_styles.css' %}"> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script> 
+    {% endblock %}
+</head>
+
+{% block body %}
+    <div class="courses-header">
+        <h1 class="header">Instructor's Dashboard</h1>
+    </div>
+    <div class="container">
+
+        <section class="section">
+            <h3> Courses You Teach </h3>
+                <ul>
+                {% for course in courses_info %}
+                    <li class="enrolled-courses padding">
+                        <div class="course-info">
+                            <span>{{ course.course.title }}</span>
+                        </div>
+
+                        <div class="progress-info">
+                            <div class="progress-bar-container">
+                            </div>
+                            <span class="progress-text">{{ course.students_enrolled }} students enrolled</span>
+                        </div>
+
+                        <div class="last-accessed">
+                                <a href="{% url 'teaching:edit_course' pk=course.course.pk %}">
+                                    Edit course
+                                </a>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+                <a id="underline" href="{% url 'teaching:create_course' %}">Create new course</a>
+        </section>
+
+    <!-- Assignments Section -->
+<section class="section assignments">
+    <h3>Submitted Assignments</h3>
+
+    <!-- Tabs for Graded and Ungraded -->
+    <div class="main">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('ungraded')">Ungraded</div>
+            <div class="tab" onclick="switchTab('graded')">Graded</div>
+        </div>
+
+        <!-- Course Filter Dropdown -->
+        <span class="dropdown">
+            <label for="course-filter">Select a Course:</label>
+            <select id="course-filter" onchange="filterAssignments()">
+                <option value="all">All Courses</option>
+                {% for course in course_progress_data %}
+                <option value="{{ course.id }}">{{ course.title }}</option>
+                {% endfor %}
+            </select>
+        </span>
+    </div>
+
+    <!-- Ungraded Assignments -->
+    <div id="ungraded" class="tab-content active">
+        <ul id="ungraded-assignments">
+            {% for course in course_progress_data %}
+            {% for a in course.ungraded_assignments %}
+            <li class="assignment-card course-{{ course.id }}" data-assignment-id="{{ a.id }}">
+                <div class="flex-assignment">
+
+                    <div class="title-assignment">
+                        <span class="assignment-title">{{ a.student }} for lesson {{a.lesson.order}}</span>
+                        <span class="submission-date">Submitted on: {{ a.date_handed_in|date:"Y-m-d H:i" }}</span>
+                    </div>
+
+                    <div class="download">
+                        <a href="javascript:void(0);" id="view-pdf-btn" class="view-pdf-button" data-assignment-id="{{ a.id }}">
+                            View PDF
+                        </a>
+                        <div id="pdf-container" style="display: none;"></div>
+                        <a class="grade-button">Grade</a>
+                        <input type="number" class="grade-input" min="0" max="10" style="display:none;" />
+                        <button class="save-grade-button" style="display:none;">Save Grade</button>
+                    </div>
+
+                </div>
+            </li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Graded Assignments -->
+    <div id="graded" class="tab-content" style="display:none;">
+        <table id="graded-assignments">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Assignment</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in course_progress_data %}
+                {% for a in course.graded_assignments %}
+                <tr class="course-{{ course.id }}">
+                    <td>{{ a.student }}</td>
+                    <td>For lesson {{ a.lesson.order }}</td>
+                    <td>{{ a.grade|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </section>
+
+
+    <section class="section">
+        <div class="notification-header">
+            <h3 class="notif">Share Announcement for Course:</h3>
+        </div>
+        <div class="announcement">
+            <form method="post" action="{% url 'teaching:create_announcement' %}" id="announcement-form">
+                {% csrf_token %}
+                <label for="recipients">Send to:</label>
+                <select name="recipients" id="recipients">
+
+                    <option value="all">All Students</option>
+                    {% for course in course_progress_data %}
+                        <option value="{{ course.id }}">{{ course.title }}</option>
+                    {% endfor %}
+                </select>
+            
+                <label for="message">Announcement Message:</label>
+                <textarea name="message" id="message" required></textarea>
+            
+                <button type="submit">Send Announcement</button>
+            </form>
+        </div>
+    </section>
+    </div>    
+{% endblock %}
+</html>

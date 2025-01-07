@@ -1,0 +1,83 @@
+{% extends 'users/layout.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'teaching_styles.css' %}"> 
+ 
+    {% endblock %}
+</head>
+
+{% block body %}
+    <div class="courses-header">
+        <h1 class="header">Edit Course</h1>
+    </div>
+    
+    <div class="container">
+        <span class="flex">
+            <h2 class="h2-course">Course Info</h2>
+            <a href="#" id="edit-button">Edit</a>
+        </span>
+
+        <div id="course-display" style="display: block;">
+            <div class="info">
+                <strong>Title:</strong> <span id="course-title">{{ course.title }}</span>
+            </div>
+            <div class="info">
+                <strong>Description:</strong> <span id="course-description">{{ course.description }}</span>
+            </div>
+            <div class="info">
+                <strong>Level:</strong> <span id="course-level">{{ course.get_level_display }}</span>
+            </div>
+        </div>
+
+        <!-- Hidden Edit Form -->
+        <form id="course-edit" data-course-id="{{ course.id }}" data-api="true" style="display: none;">
+            {% csrf_token %}
+            <div class="row">
+                <div class="first-col">
+                    <div class="form-group">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.description.label_tag }}
+                        {{ form.description }}
+                    </div>
+                </div>
+                <div class="second-col">
+                    <div class="form-group">
+                        {{ form.level.label_tag }}
+                        {{ form.level }}
+                    </div>
+                    <button type="button" id="save-course-changes">Save Changes</button>
+                </div>
+            </div>
+            
+        </form>
+
+        <span class="flex">
+            <h2 class="h2-lessons">Lessons</h2>
+            <a id="add-lesson" href="{% url 'teaching:add_lesson' course.id %}">Add New Lesson</a>
+        </span>
+        <div class="lessons-section">
+            {% for lesson in lessons %}
+            <div class="lesson-card">
+                <h3>{{ lesson.order }}. {{ lesson.title }}</h3>
+                <div class="actions">
+                    <a href="{% url 'teaching:edit_lesson' lesson.id %}" class="btn edit-btn">Detailed edit</a>
+                   <a href="{% url 'teaching:lesson_delete' lesson.id %}" class="btn delete-btn">Delete</a>
+                </div>
+            </div>
+            {% empty %}
+            <p>No lessons available. Add one below!</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+</html>

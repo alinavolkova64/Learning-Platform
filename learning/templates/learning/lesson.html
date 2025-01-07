@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}"> 
+{% endblock %}
+
+{% block body %}
+<body>
+    <div class="container">
+        <!-- Course and Lesson Info -->
+        <div class="lesson-header">
+            <h1>{{ course.title }}, Lesson {{ lesson.order }}:</h1>
+            <h2> {{ lesson.title }}</h2>
+        </div>
+
+        {% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <!-- Lesson Completion Status -->
+        <div class="completion-indicator">
+            <span class="{% if lesson.is_complete %}complete{% else %}incomplete{% endif %}">
+                {% if lesson.is_complete %}Lesson Completed{% else %}Lesson Incomplete{% endif %}
+            </span>
+        </div>
+
+        <!-- Video Section -->
+        <div class="lesson-video">
+            {% if lesson.video_file %}
+                <video controls>
+                    <source src="{{ lesson.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% elif lesson.video_url %}
+                <iframe width="1200" height="500" src="{{ lesson.video_url }}" frameborder="0" allowfullscreen></iframe>
+            {% else %}
+                <p>No video available for this lesson.</p>
+            {% endif %}
+        </div>
+
+        <!-- Lesson Content -->
+        <section class="lesson-content">
+            <h3>Lesson Material</h3>
+            <p>{{ lesson.content }}</p>
+        </section>
+
+        <!-- PDF Downloads -->
+        <section class="lesson-pdfs">
+        <h3>Downloadable PDF</h3>
+        {% if lesson.pdf %}
+            <ul>
+                <li><a href="{{ lesson.pdf.url }}" download>{{ lesson.title }} - PDF</a></li>
+            </ul>
+        {% else %}
+            <p>No downloadable PDF available for this lesson.</p>
+        {% endif %}
+        </section>
+
+        <!-- Homework Section -->
+        <section class="homework-section">
+            <h3>Homework Requirements</h3>
+            <p>{{ lesson.homework_requirements }}</p>
+
+            <!-- Assignment Submission -->
+            {% if lesson.is_complete %}
+                <p>You have successfully submitted assignment for this lesson.</p>
+            {% else %}
+                <form action="" method="post" enctype="multipart/form-data" id="submission">
+                    {% csrf_token %}
+                    <label for="assignment">Submit Your Assignment:</label>
+                    <input type="file" id="assignment" name="assignment">
+                    <button type="submit">Submit</button>
+                </form>
+            {% endif %}
+        </section>
+
+        <!-- Quizzes Section -->
+        <section class="section">
+            <h3>Quizzes</h3>
+            <div class="announcement">
+                <ul>
+                    {% for quiz in quizzes %}
+                    <li class="enrolled-courses">
+                        <a class="assignment" href="{% url 'learning:quiz_start' quiz_id=quiz.id %}">
+                            {{ quiz.name }} ({{ quiz.difficulty }})
+                        
+                            {% if quiz.session.score %}
+                                <div class="mini-info">
+                                    - Completed ( Score: {{ quiz.session.score }}% )
+                                </div>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% empty %}
+                        <li>No quizzes available for this lesson yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <!-- Navigation between lessons -->
+        <div class="center">
+            <span class="one-line">
+                {% if lesson.previous_lesson_order %}
+                <!-- Previous Lesson Button -->
+                <div class="next-lesson">
+                    <a href="{% url 'learning:lesson' course_title=course.title lesson_order=lesson.previous_lesson_order%}" class="button">Previous Lesson</a>
+                </div>
+                {% endif %}
+                <!-- Next Lesson Button -->
+                {% if lesson.next_lesson_order %}
+                <div class="next-lesson">
+                    <a href="{% url 'learning:lesson' course_title=course.title lesson_order=lesson.next_lesson_order%}" class="button">Next Lesson</a>
+                </div>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+{% endblock %}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+
+{% block body %}
+    <div class="courses-header">
+        <h1>Course Details</h1>
+    </div>
+
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <main class="course-details-container">
+        <!-- Course Overview Section -->
+        <section class="course-header">
+            <h2>Course: {{ course.title }}</h2>
+            <p><strong>Instructor:</strong> {{ course.instructor.first_name }} {{ course.instructor.last_name }}</p>
+            <p><strong>Level:</strong> {{ course.level|title }}</p>
+            <p><strong>Field of Study:</strong> {{ course.field_of_study }} </p>
+            <p><strong>Number of Lessons:</strong> {{ lessons.count }}</p>
+
+
+            {% if is_enrolled %}
+                <button class="enrolled-btn" >Already Enrolled</button>
+            {% else %}
+                <form  id="enroll-form" method="POST" 
+                data-course-title="{{ course.title }}" data-course-id="{{ course.id }}">
+                    {% csrf_token %}
+                    <button type="submit"  class="enroll-btn">Enroll Now</button>
+                </form>
+            {% endif %}
+        </section>
+
+        <!-- Description Section -->
+        <section class="course-prerequisites">
+            <h3>Course Description</h3>
+            <ul>
+                <div>{{ course.description }}</div>
+            </ul>
+        </section>
+
+        <!-- Syllabus Section -->
+        <section class="course-syllabus">
+            <h3>Course Syllabus</h3>
+            <ul>
+                {% for lesson in lessons %}
+                <li>Lesson {{ lesson.order }}. {{ lesson.title }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Prerequisites Section -->
+        <section class="course-prerequisites">
+            <h3>Prerequisites</h3>
+            <ul>
+                {% for p in course.prerequisites.all %}
+                    <li>{{ p.name }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Progress Tracker (For Enrolled Students) -->
+         {% if is_enrolled %}
+        <section class="progress-tracker">
+            <h3>Your Progress</h3>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ progress }}%">{{ progress }}%</div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Instructor Info Section -->
+        <section class="instructor-info">
+            <h3>Instructor</h3>
+            <div class="instructor-card">
+                <img src="https://i.pinimg.com/736x/17/fa/44/17fa44e8d7f0d4a341f078b6c94a31ef.jpg" alt="Instructor Picture" class="instructor-img">
+                <p><strong>{{ course.instructor.first_name }} {{ course.instructor.last_name }}</strong></p>
+                <p>{{ course.instructor.profile.bio }}</p>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section class="course-reviews">
+            <h3>Student Reviews</h3>
+            <div class="review">
+                <p><strong>John Smith:</strong> "This course is amazing! I learned so much about Python."</p>
+            </div>
+            <div class="review">
+                <p><strong>Sarah Johnson:</strong> "Great explanations and hands-on examples!"</p>
+            </div>
+        </section>
+    </main>
+{% endblock %}

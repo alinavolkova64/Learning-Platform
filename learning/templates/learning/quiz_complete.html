@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}"> 
+{% endblock %}
+
+{% block body %}
+<body>
+    <div class="container">
+        <div class="question-card">
+            <h2 class="question-title" id="question-title">You have completed this quiz.</h2>
+            
+                <ul>
+                    <li><strong>Difficulty:</strong> {{ quiz.difficulty }}</li>
+                    <li><strong>Course:</strong> {{ quiz.course.title }}</li>
+                    <li><strong>Lesson:</strong> {{ quiz.lesson.title }}</li>
+                    <li><strong>Required score to pass:</strong> {{ quiz.required_score }}%</li>
+                    <hr>
+                    <li><strong>Your score:</strong> {{ session.score }}% 
+                        ( {{session.correct_answer_count }} / {{ quiz.questions.count }} correct answers )
+                    </li>
+                    <li><strong>{{ message }}</strong></li>
+                    <li><strong>You solved this quiz in : </strong> 
+                        {{ session_minutes }} min {{ session_seconds }} sec
+                    </li>
+                </ul>
+                {% if session.passed %}
+                    <h2 class="question-title" id="passed-flag">PASSED</h2>
+                {% else %}
+                    <h2 class="question-title" id="not-passed-flag">DID NOT PASS</h2>
+                {% endif %}
+        </div>
+
+        <button id="toggleAnswers" class="toggle-button">View Correct Answers</button>
+        <div id="answersTable" class="answers-table-container" style="display: none;">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Your Answer</th>
+                        <th>Correct Answer</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for answer in submitted_answers %}
+                    <tr>
+                        <td>{{ answer.question.text }}</td>
+                        <td>{{ answer.selected_answer }}</td>
+                        <td>
+                            {% for correct_answer in answer.question.options.all %}
+                                {% if correct_answer.is_correct %}
+                                    {{ correct_answer.text }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% if answer.is_correct %}
+                                <span class="result correct">Correct</span>
+                            {% else %}
+                                <span class="result incorrect">Incorrect</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+{% endblock %}

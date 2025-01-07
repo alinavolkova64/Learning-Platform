@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+
+{% block body %}
+<div class="courses-header">
+    <h1 class="header">Browse Our Courses</h1>
+</div>
+
+<div class="courses-page">
+    <!-- Filter Sidebar -->
+    <aside class="filter-sidebar">
+        <h2>Filter by:</h2>
+        <form method="get" id="filter-form">
+            {{ form.as_p }}  
+            <button type="submit">Filter</button>
+        </form>
+    </aside>
+
+    <!-- Courses Section -->
+    <section class="courses-list">
+        {% for course in courses %}
+            <div class="course-card">
+                <h3 class="course-title">{{ course.title }}</h3>
+                <p class="course-category">Field of Study: {{ course.field_of_study}}
+                </p>
+                <p class="course-teacher">Instructor: {{ course.instructor.first_name }} {{ course.instructor.last_name }}</p>
+                <p class="course-description">{{ course.description|truncatechars:150 }}</p>
+                <a class="view-details-btn" href="{% url 'users:course_details' course_id=course.id %}">View Details</a>
+            </div>
+        {% empty %}
+            <li>No courses found.</li>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

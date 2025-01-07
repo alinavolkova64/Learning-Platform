@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Online Learning Platform</title>
+        <link rel="stylesheet" href="static/styles.css"> 
+    </head>
+
+{% block body %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Learn from the Best</h2>
+            <p>Join thousands of students who are enhancing their skills with our diverse course offerings.</p>
+            <a href="{% url 'users:courses' %}" class="cta-button">Explore Courses</a>
+        </div>
+    </section>
+
+    <!-- Featured Courses Section -->
+    <section id="courses">
+        <div class="container">
+            <h2>Featured Courses</h2>
+            <div class="course-list">
+                {% for course in courses %}
+                    <div class="course-item">  
+                        <h3>{{ course.title }}</h3>
+                        <p class="description">{{ course.description|truncatewords:10 }}</p>
+                        <a href="{% url 'users:course_details' course_id=course.id %}" class="course-button">View Course</a>
+                    </div>
+                {% endfor %}
+                <div class="course-item">
+                    <h3>Course Title 2</h3>
+                    <p class="description">Short description of the course.</p>
+                    <a href="#" class="course-button">View Course</a>
+                </div>
+                <div class="course-item">
+                    <h3>Course Title 3</h3>
+                    <p class="description">Short description of the course.</p>
+                    <a href="#" class="course-button">View Course</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <div>We are a passionate team of educators and technologists dedicated to creating an accessible, engaging, and high-quality learning experience for everyone.<br>
+                 Our platform is built on the belief that education should be available to learners everywhere, regardless of their location or background. <br>
+                 Through cutting-edge technology and expertly designed courses, we empower students to achieve their academic and professional goals.<br>
+                 Whether you're looking to learn something new, enhance your skills, or explore a new career path, we are here to support you on your journey to success.</div>
+        </div>
+    </section>
+
+    <!--FAQ section-->
+    <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <button class="faq-question">What is this platform about?</button>
+            <div class="faq-answer">
+                <p>This platform is an online learning platform where users can enroll in courses, watch lectures, complete assignments, and track their progress.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">How can I enroll in a course?</button>
+            <div class="faq-answer">
+                <p>You can enroll in a course by registering or logging into your account, navigating to the Courses page, and selecting the course you are interested in.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">Are there any free courses available?</button>
+            <div class="faq-answer">
+                <p>Yes, we offer a variety of free courses that you can enroll in without any cost. Look for the “Free” label on the course cards.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials">
+        <div class="container">
+            <h2>What Our Students Say</h2>
+            <blockquote>
+                <p>"This platform has transformed my learning experience!" - James John</p>
+            </blockquote>
+            <blockquote>
+                <p>"The courses are engaging and well-structured." - Alice White</p>
+            </blockquote>
+        </div>
+    </section>
+
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            
+            <form action="/" method="POST">
+                <div class="center-header">
+                    <h2 class="contact">Contact Us</h2>
+                    <p>If you have any questions left, feel free to reach out!</p>
+                </div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+</html>

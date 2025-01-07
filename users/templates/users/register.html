@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html'%}
+
+{% block body%}
+<!--Error messages-->
+{% if message %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+{% endif %}
+
+<div class="login-register-container">
+    <div class="form-wrapper">
+        <form id="register-form" class="auth-form" method="POST">
+            <h2>Register</h2>
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Register</button>
+            <p>Already have an account? <a href="{% url 'users:login' %}">Login here</a></p>
+        </form>
+    </div>
+</div>
+{% endblock %}

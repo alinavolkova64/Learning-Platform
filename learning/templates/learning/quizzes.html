@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% extends 'users/layout.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}"> 
+{% endblock %}
+
+{% block body %}
+<body>
+    <div class="courses-header">
+        <h1 class="header">Quizzes</h1>
+    </div>
+    <div class="container">
+        {% for course in quizzes %}
+            <section class="section">
+                <h3>Course: {{ course.course_name }}</h3>
+                <ul>
+                    {% for item in course.quizzes %}
+                    <li class="enrolled-courses">
+                        <a class="assignment" href="{% url 'learning:quiz_start' quiz_id=item.quiz.id %}">
+                            {{ item.quiz.name }} ({{ item.quiz.difficulty }})
+                        
+                            {% if item.session.score %}
+                                <div class="mini-info">
+                                    - Completed ( Score: {{ item.session.score }}% )
+                                </div>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% empty %}
+                        <li>No quizzes available for this course yet.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            
+        {% endfor %}
+    </div>
+</body>
+{% endblock %}

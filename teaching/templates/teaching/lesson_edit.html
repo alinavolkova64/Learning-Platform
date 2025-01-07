@@ -1,0 +1,62 @@
+{% extends 'users/layout.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Lesson</title>
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'learning_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'teaching_styles.css' %}"> 
+ 
+    {% endblock %}
+</head>
+
+{% block body %}
+    <div class="courses-header">
+        <h1 class="header">Edit Lesson</h1>
+    </div>
+    <div class="container">
+        <form method="POST" action="{% url 'teaching:edit_lesson' lesson.id %}">
+            {% csrf_token %}
+            <div class="row">
+            <div class="first-col">
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                {{ form.order.label_tag }}
+                {{ form.order }}
+            </div>
+            <div class="form-group">
+                {{ form.content.label_tag }}
+                {{ form.content }}
+            </div>
+        </div>
+        <div class="second-col">
+            <div class="form-group">
+                {{ form.video_url.label_tag }}
+                {{ form.video_url }}
+            </div>
+            <div class="form-group">
+                {{ form.video_file.label_tag }}
+                {{ form.video_file }}
+            </div>
+            <div class="form-group">
+                {{ form.pdf.label_tag }}
+                {{ form.pdf }}
+            </div>
+            <div class="form-group">
+                {{ form.homework_requirements.label_tag }}
+                {{ form.homework_requirements }}
+            </div>
+        </div>
+    </div>
+            <button type="submit" class="btn primary-btn">Save Changes</button>
+        </form>
+    
+    </div>
+{% endblock %}
+</html>
