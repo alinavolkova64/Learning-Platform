@@ -24,9 +24,9 @@ As a self-taught developer, online learning platforms have played a crucial role
 
 #### Project Goals & Technical Focus
 This project was built with Django and RESTful API principles, focusing on:
-&nbsp;&nbsp;&nbsp;&nbsp;✔ Scalability & Modularity – Clean architecture for future expansion
-&nbsp;&nbsp;&nbsp;&nbsp;✔ User-Centric Design – Intuitive navigation and responsive UI
-&nbsp;&nbsp;&nbsp;&nbsp;✔ Practical Full-Stack Implementation – Backend logic and frontend interaction
+✔ Scalability & Modularity – Clean architecture for future expansion
+✔ User-Centric Design – Intuitive navigation and responsive UI
+✔ Practical Full-Stack Implementation – Backend logic and frontend interaction
 
 ---
 ## Tech Stack & Architecture  
