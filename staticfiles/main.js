@@ -1,9 +1,9 @@
 //------------------------------    WEBSOCKET    ----------------------------------------- 
 const notifySocket = new WebSocket( // setup chat socket
-    'ws://'
+    'wss://' // ensure secure connection
     + window.location.host
     + '/ws/notify/'
-);
+);  
 
 // on socket open
 notifySocket.onopen = function(e) {

@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()  # This loads the .env file
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +30,11 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'fallback-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+# Allowed Hosts should match the domain
+ALLOWED_HOSTS = ["learning-platform-production.up.railway.app"] 
+
+# Secure WebSocket settings (since using Daphne)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
@@ -50,16 +55,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'multiselectfield',
+    # Debugging
+    'whitenoise.runserver_nostatic',  # This disables Django’s built-in runserver handling
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # for debugging
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 # Define the location where uploaded media files will be stored
@@ -149,6 +158,13 @@ STATIC_URL = '/static/'
 # Directory where static files will be collected during deployment
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STORAGES = {
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# } # Reduntant for now
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -157,3 +173,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configurations to use custom User model globally throughout the project
 AUTH_USER_MODEL = 'users.User'
 
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://learning-platform-production.up.railway.app/",
+]
+
+
+
+# Enabling logging for debugging purposes 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'django_errors.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}

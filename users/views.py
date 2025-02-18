@@ -128,19 +128,27 @@ def course_details(request, course_id):
     Displays the page of course's details, 
     including student's progress and ability to enroll.
     """
-    course = Course.objects.get(id=course_id)
+    course = get_object_or_404(Course, id=course_id)
     lessons = course.lessons.all() # Access using related name
     
-
-    # Check if the student is enrolled
-    if request.user.profile:
-        is_enrolled = Enrollment.objects.filter(student=request.user.profile, course=course).exists()
-        
+    is_enrolled = False
     progress = 0
 
-    if is_enrolled: 
-        enrollment = Enrollment.objects.get(student=request.user.profile, course=course)
-        progress = enrollment.calculate_progress()
+    # Check if the user is authenticated before accessing profile
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'profile'):  # Check if profile exists
+            is_enrolled = Enrollment.objects.filter(student=request.user.profile, course=course).exists()
+            if is_enrolled:
+                enrollment = Enrollment.objects.get(student=request.user.profile, course=course)
+                progress = enrollment.calculate_progress()
+
+    # # Check if the student is enrolled
+    # if request.user.profile:
+    #     is_enrolled = Enrollment.objects.filter(student=request.user.profile, course=course).exists()
+
+    # if is_enrolled: 
+    #     enrollment = Enrollment.objects.get(student=request.user.profile, course=course)
+    #     progress = enrollment.calculate_progress()
 
     return render(request, "users/course_details.html", {
         'course': course,
