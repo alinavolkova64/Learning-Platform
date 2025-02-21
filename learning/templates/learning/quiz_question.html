@@ -88,50 +88,5 @@ function updateTimer() {
 setInterval(updateTimer, 1000); // Update every second
 
     </script>
-
-
-    <!-- <script>
-        // JavaScript to visually count down on the frontend
-        let timerElement = document.getElementById('timer');
-        let timeRemaining = parseInt(timerElement.getAttribute('data-time')); // Remaining seconds
-    
-        function updateTimer() {
-            // if (timeRemaining <= 0) {
-            //     window.location.href = "/learning/quiz-complete/{{ quiz.id }}/"; // Redirect when time is up
-            //     return;
-            // }
-
-            if (timeRemaining <= 0) {
-                // Send AJAX request to finalize the quiz
-                fetch("/learning/quiz-finalize/{{ quiz.id }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value, 
-                    },
-                    body: JSON.stringify({
-                        quiz_id: "{{ quiz.id }}"
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = "/learning/quiz-complete/{{ quiz.id }}/"; // Redirect after finalization
-                    } else {
-                        alert("An error occurred while finalizing the quiz.");
-                    }
-                });
-                return;
-            }
-            
-            timeRemaining--;
-            let minutes = Math.floor(timeRemaining / 60);
-            let seconds = timeRemaining % 60;
-            document.getElementById('time-display').textContent =
-                `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-        }
-    
-        setInterval(updateTimer, 1000); // Update every second
-    </script>     -->
 </body>
 {% endblock %}

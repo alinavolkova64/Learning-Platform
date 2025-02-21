@@ -142,14 +142,6 @@ def course_details(request, course_id):
                 enrollment = Enrollment.objects.get(student=request.user.profile, course=course)
                 progress = enrollment.calculate_progress()
 
-    # # Check if the student is enrolled
-    # if request.user.profile:
-    #     is_enrolled = Enrollment.objects.filter(student=request.user.profile, course=course).exists()
-
-    # if is_enrolled: 
-    #     enrollment = Enrollment.objects.get(student=request.user.profile, course=course)
-    #     progress = enrollment.calculate_progress()
-
     return render(request, "users/course_details.html", {
         'course': course,
         'lessons': lessons,         
