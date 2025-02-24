@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from decouple import config
 
 
 load_dotenv()  # This loads the .env file
@@ -28,10 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'fallback-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Allowed Hosts should match the domain
-ALLOWED_HOSTS = ["learning-platform-production.up.railway.app"] 
+ALLOWED_HOSTS = ["learning-platform-production.up.railway.app", "127.0.0.1:8000",  '127.0.0.1' ] 
 
 # Secure WebSocket settings (since using Daphne)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -55,13 +56,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'multiselectfield',
-    # Debugging
-    'whitenoise.runserver_nostatic',  # This disables Django’s built-in runserver handling
+    
+    'whitenoise.runserver_nostatic',  # Disables Django’s built-in runserver handling
+    'storages', # Integration for cloud storage
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # for debugging
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,7 +77,7 @@ MIDDLEWARE = [
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
 
 # Define the URL that will serve the media files
-MEDIA_URL = '/media/'
+# MEDIA_URL = '/media/'
 
 ROOT_URLCONF = 'capstone.urls'
 
@@ -158,12 +160,7 @@ STATIC_URL = '/static/'
 # Directory where static files will be collected during deployment
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-# STORAGES = {
-#     "staticfiles": {
-#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-#     },
-# } # Reduntant for now
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -178,7 +175,25 @@ CSRF_TRUSTED_ORIGINS = [
     "https://learning-platform-production.up.railway.app/",
 ]
 
+# AWS cloud storage configurations
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = "learning-platform-media-s3-bucket"
+DEFAULT_FILE_STORAGE = "capstone.storage_backends.MediaStorage" # Configure Django to use S3 for media files
 
+AWS_S3_REGION_NAME = "eu-north-1"  
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_DEFAULT_ACL = None
+
+# Set S3 Bucket URL for accessing/uploding files
+#AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/media"
+#MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/media/'
 
 # Enabling logging for debugging purposes 
 LOGGING = {

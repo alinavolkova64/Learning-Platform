@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.conf import settings
+from capstone.storage_backends import MediaStorage  # Import custom storage
 
 
 class User(AbstractUser):
@@ -148,7 +149,7 @@ class StudentAssignment(models.Model):
     student = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='assignments')
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="assignments")
-    file = models.FileField(upload_to='assignment_files/')
+    file = models.FileField(storage=MediaStorage(), upload_to='assignment_files/')
     handed_in = models.BooleanField(default=False)
     date_handed_in = models.DateTimeField(auto_now_add=True)
     grade = models.IntegerField(null=True, blank=True, validators=[MaxValueValidator(10), MinValueValidator(1)])
