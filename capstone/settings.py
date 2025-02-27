@@ -29,10 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'fallback-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Allowed Hosts should match the domain
-ALLOWED_HOSTS = ["learning-platform-production.up.railway.app", "127.0.0.1:8000",  '127.0.0.1' ] 
+ALLOWED_HOSTS = ["learning-platform-production.up.railway.app" ] 
 
 # Secure WebSocket settings (since using Daphne)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

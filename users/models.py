@@ -66,8 +66,8 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     title = models.CharField(max_length=255)
     video_url = models.URLField(blank=True, null=True)
-    video_file = models.FileField(upload_to='lesson_videos/', blank=True, null=True)
-    pdf = models.FileField(upload_to='lesson_pdfs/', blank=True, null=True)
+    video_file = models.FileField(storage=MediaStorage(), upload_to='lesson_videos/', blank=True, null=True)
+    pdf = models.FileField(storage=MediaStorage(), upload_to='lesson_pdfs/', blank=True, null=True)
     content = models.TextField() 
     order = models.PositiveIntegerField()  # Order of lessons in a course
     homework_requirements = models.TextField(blank=True, null=True)
