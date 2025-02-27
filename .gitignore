@@ -163,3 +163,9 @@ cython_debug/
 
 # Database backup
 backup.json
+
+# Local media folder
+media/
+
+# Ignore collected static files
+staticfiles/

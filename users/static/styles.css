@@ -125,7 +125,7 @@ nav a:hover {
 }
 
 .course-item {
-    background: #f1f1f1;
+    background: var(--light-violet);
     padding: 20px;
     border-radius: 5px;
     flex: 1 1 calc(30% - 20px);
@@ -170,7 +170,7 @@ p.description {
 }
 
 blockquote {
-    background: #f1f1f1;
+    background: var(--light-violet);
     padding: 20px;
     border-left: 5px solid var(--primary-violet);
     margin: 10px 0;

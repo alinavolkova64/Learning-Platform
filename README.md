@@ -1,13 +1,12 @@
-# Online learning platform 
-#### made by Alina Volkova, 2025
-
+# Online Learning Platform 
+#### Made by Alina Volkova, 2025
 ---
 ## Table of Contents
 1. [About the Project](#about-the-project)
     * [Why This Project?](#why-this-project)
-    * [Project Goals & Technical Focus](#project-goals--technical-focus)
+    * [Project Goals](#project-goals)
 
-2. [Tech Stack & Architecture](#tech-stack--architecture)
+2. [Tech Stack, Deployment & Architecture](#tech-stack-deployment--architecture)
     * [Tech Stack](#️-tech-stack)
     * [Architectural Design](#️-architectural-design)
 
@@ -22,14 +21,13 @@ Designed for flexibility and ease of use, this platform combines modern web tech
 #### Why This Project?
 As a self-taught developer, online learning platforms have played a crucial role in my education—allowing me to structure my learning and explore programming beyond traditional pathways. This project is both a tribute to the power of online education and a way to demonstrate my ability to design and implement scalable, interactive web applications.
 
-#### Project Goals & Technical Focus
-This project was built with Django and RESTful API principles, focusing on:
-✔ Scalability & Modularity – Clean architecture for future expansion
-✔ User-Centric Design – Intuitive navigation and responsive UI
-✔ Practical Full-Stack Implementation – Backend logic and frontend interaction
+#### Project Goals
+- Scalability & Modularity – Clean architecture for future expansion
+- Practical Full-Stack Implementation 
+- Intuitive, User-Centric Design 
 
 ---
-## Tech Stack & Architecture  
+## Tech Stack, Deployment & Architecture  
 
 ### ⚙️ Tech Stack  
 - **Backend:** Python, Django, Django REST Framework (DRF)  
@@ -37,7 +35,16 @@ This project was built with Django and RESTful API principles, focusing on:
 - **Database:** SQLite
 - **Real-time Functionality:** Django Channels (WebSockets)  
 - **Authentication:** Django’s built-in authentication system with role-based access
+&nbsp;
+### 🌐 Deployment Details
+This project is **fully deployed**:
 
+- Hosted on **Railway** using **Daphne ASGI** for real-time WebSocket connections.
+- **AWS S3** integration for **scalable media storage**, ensuring efficient file handling.
+- Secure environment management, keeping sensitive data protected with **environment variables**.
+- Optimized static & media file handling for smooth performance.
+
+&nbsp;
 ### 🏗️ Architectural Design  
 
 #### **Role-Based System**  
@@ -63,40 +70,60 @@ This project was built with Django and RESTful API principles, focusing on:
 - **PDF.js integration**: View assignments directly in the browser without downloading.  
 - **Custom CSS & media queries** for a fully responsive, mobile-friendly design.  
 
-#### **Real-Time Features**  
-- **WebSocket-based notifications** enable live updates for instructor announcements. Unlike traditional chat-based systems, this ensures focused, education-relevant communication.  
-
-#### **Quizzes & Interactive Learning**  
-- Dynamic **quiz system** with:  
-  - One-question-per-card UX for better focus  
-  - **Real-time feedback** (answer comparison & scores)  
-  - **Timer system** with automatic submission on timeout  
-  - Progress tracking while taking a quiz
-
 ---
 ##  Key Features  
 
 ###  Intuitive Learning Experience  
 - **Smart dashboard system** tailored separately for **students** and **instructors**.   
--  **Modern, responsive and user-friendly UI** with an engaging **home page** featuring testimonials, FAQs and dynamic elements.
-- **Dynamic course catalog** with **filtering options** (by category, level).  
-- **Comprehensive course pages** including syllabus, instructor details, and user reviews.  
+- Course and Lesson management with **inline editing (AJAX) and Django REST API support** by instructors.
 - **Smooth lesson navigation** with:  
   - Embedded video player  
   - Downloadable resources  
   - Homework Requirements & Assignment Submission
+- **Dynamic course catalog** with **filtering options** (by category, level).  
+- **Comprehensive course pages** including syllabus, instructor details, and user reviews.  
+-  **Modern, responsive and user-friendly UI** with an engaging **home page** featuring testimonials, FAQs and dynamic elements.
 
 ### Assignments & Grading  
 - **PDF-based homework submissions** with in-app viewing for instructors.  
-- **Grading system** that allows instructors to dynamically update scores.  
+- **Grading system** that allows instructors to dynamically update scores. 
+&nbsp; 
+![Demo](assets/pdf-grade.gif)
+&nbsp;
+### Advanced Features   
+#### **Real-Time Feature**  
+- **Live WebSocket-based notification system** enables sending real-time messages from instructors to students. 
+Unlike traditional chat-based systems, this ensures focused, education-relevant communication.  
+&nbsp;
+![Demo](assets/websocket.gif)
+🎥 **Live WebSocket Notification in Action**  
+The test notification is sent via **Django Channels WebSockets**, instantly appearing on the page & console log (see `wss://` connection).  
+&nbsp;
+#### **Quizzes & Interactive Learning**  
+- **Dynamic Quiz System** with:  
+  - **Real-time feedback** (answer comparison & scores)  
+  - **Timer system** with automatic submission on timeout  
+  - **Progress tracking** while taking a quiz
+  - One-question-per-card UX for better focus  
+&nbsp;
+  ![Demo](assets/quiz-features.gif) 
+&nbsp;
 
-### Advanced Features  
-- **Live notifications via WebSockets** (to send real-time messages from instructors to students).  
-- **Interactive quiz system** with:  
-  - Timed assessments  
-  - Instant feedback & score tracking  
-- Course and Lesson management with **inline editing (AJAX) and Django REST API support**
+&nbsp;
+#### 🚀 **Try It Yourself**
+The platform is live and available for testing. If you'd like a deeper dive into the features, you can use the following credentials:
 
+👩‍🎓 **Student Account**
+Username: foo_student
+Password: 12345qwerty
+
+👨‍🏫 **Instructor Account**
+Username: alice_white
+Password: 12345qwerty
+
+Feel free to explore the dashboards, test notifications,solve quizzes and interact with the platform firsthand. 
+**Live Demo:** [Try it here](https://learning-platform-production.up.railway.app/)
+&nbsp;
 
 ---
 ## ⚙️ Key Design Decisions  
